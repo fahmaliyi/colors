@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Studio — Minimalist Token & Color Scheme Studio</title>
+    <meta
+      name="description"
+      content="Perceptually uniform color schemes and design tokens generated through modern native web capabilities and OKLCH."
+    />
+
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Google Material Symbols Outlined -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="appShell">
+      <!-- 1. Left Navigation Sidebar (270px wide, offcanvas collapsible) -->
+      <aside
+        class="app-sidebar-left"
+        id="appSidebar"
+        aria-label="Application Navigation"
+      >
+        <div>
+          <div class="sidebar-header">
+            <div class="brand-text-block">
+              <span class="brand-title">Color Studio</span>
+              <span class="tag-badge">OKLCH</span>
+            </div>
+            <button
+              id="closeSidebarBtn"
+              class="button-icon-only close-sidebar-btn"
+              title="Close Left Panel"
+              aria-label="Close Left Panel"
+            >
+              <span class="material-symbols-outlined" style="font-size: 1.15rem"
+                >left_panel_close</span
+              >
+            </button>
+          </div>
+
+          <nav class="sidebar-nav" aria-label="Views">
+            <button class="nav-item active" data-tab="sandbox">
+              <span class="material-symbols-outlined">layers</span>
+              <span>Live Sandbox</span>
+            </button>
+            <button class="nav-item" data-tab="tonal">
+              <span class="material-symbols-outlined">gradient</span>
+              <span>Tonal Scales</span>
+            </button>
+            <button class="nav-item" data-tab="contrast">
+              <span class="material-symbols-outlined">verified</span>
+              <span>Accessibility</span>
+            </button>
+            <button class="nav-item" data-tab="export">
+              <span class="material-symbols-outlined">code</span>
+              <span>Export Tokens</span>
+            </button>
+            <button class="nav-item" data-tab="presets">
+              <span class="material-symbols-outlined">auto_awesome</span>
+              <span>Curated Presets</span>
+            </button>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- 2. Center Main Canvas / Workspace -->
+      <main class="app-main-canvas" id="main-content">
+        <!-- Canvas Header Bar with Panel Triggers -->
+        <header class="canvas-top-bar">
+          <div class="canvas-top-bar-left">
+            <button
+              id="openSidebarBtn"
+              class="button-icon-only open-sidebar-btn"
+              title="Open Left Panel"
+              aria-label="Open Left Panel"
+            >
+              <span class="material-symbols-outlined" style="font-size: 1.15rem"
+                >left_panel_open</span
+              >
+            </button>
+          </div>
+
+          <div class="canvas-top-bar-right">
+            <button
+              id="openInspectorBtn"
+              class="button-icon-only open-inspector-btn"
+              title="Open Right Panel (])"
+              aria-label="Open Right Panel"
+            >
+              <span class="material-symbols-outlined" style="font-size: 1.15rem"
+                >right_panel_open</span
+              >
+            </button>
+          </div>
+        </header>
+
+        <div class="canvas-container">
+          <!-- Tab 1: Live Interactive Sandbox -->
+          <section
+            class="tab-panel active"
+            id="tab-sandbox"
+            aria-label="Interactive Live Sandbox"
+          >
+            <div class="sandbox-toolbar">
+              <!-- Device Mode Selector -->
+              <div
+                class="sandbox-segmented-group"
+                id="sandboxDeviceGroup"
+                role="tablist"
+                aria-label="Device View"
+              >
+                <button
+                  class="sandbox-segment-btn active"
+                  data-device="desktop"
+                  title="Desktop Web App View"
+                  role="tab"
+                  aria-selected="true"
+                >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size: 1rem"
+                    >desktop_windows</span
+                  >
+                  <span>Desktop</span>
+                </button>
+                <button
+                  class="sandbox-segment-btn"
+                  data-device="mobile"
+                  title="Phone App View"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size: 1rem"
+                    >smartphone</span
+                  >
+                  <span>Phone</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Morphing Device Stage -->
+            <div class="sandbox-stage">
+              <div
+                class="device-morph-frame mode-desktop"
+                id="deviceMorphFrame"
+              >
+                <div class="device-screen-viewport" id="deviceScreenViewport">
+                  <!-- Dynamically populated and animated by app.js -->
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tab 2: Tonal Scales (50–950) -->
+          <section class="tab-panel" id="tab-tonal" aria-label="Tonal Scales">
+            <div class="surface-card">
+              <div class="card-header-subtle">
+                <span class="card-heading"
+                  >Systematic OKLCH Lightness Distribution</span
+                >
+                <span class="card-caption"
+                  >Click any step to copy HEX value</span
+                >
+              </div>
+              <div id="tonalRampContainer">
+                <!-- Tonal scale ramp injected by JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Tab 3: Accessibility Matrix -->
+          <section
+            class="tab-panel"
+            id="tab-contrast"
+            aria-label="WCAG Contrast Matrix"
+          >
+            <div class="surface-card">
+              <div class="card-header-subtle">
+                <span class="card-heading"
+                  >WCAG 2.1 &amp; APCA Contrast Analysis</span
+                >
+                <span class="card-caption"
+                  >Verified against AA (4.5:1) and AAA (7.0:1) criteria</span
+                >
+              </div>
+              <div class="table-scroll" id="contrastMatrixContainer">
+                <!-- Contrast table injected by JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Tab 4: Code Exporters -->
+          <section class="tab-panel" id="tab-export" aria-label="Code Exporter">
+            <div class="surface-card">
+              <div class="card-header-subtle">
+                <span class="card-heading" id="exportFormatTitle"
+                  >CSS Custom Properties (:root)</span
+                >
+                <div style="display: flex; gap: var(--space-xs)">
+                  <button
+                    class="button button-secondary"
+                    id="copyExportBtn"
+                    style="width: auto; padding: 0.3rem 0.85rem"
+                  >
+                    <span
+                      class="material-symbols-outlined"
+                      style="font-size: 0.95rem"
+                      >content_copy</span
+                    >
+                    <span>Copy</span>
+                  </button>
+                  <button
+                    class="button"
+                    id="downloadExportBtn"
+                    style="width: auto; padding: 0.3rem 0.85rem"
+                  >
+                    <span
+                      class="material-symbols-outlined"
+                      style="font-size: 0.95rem"
+                      >download</span
+                    >
+                    <span>Download</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="exporter-wrapper">
+                <nav class="exporter-format-bar" aria-label="Export Formats">
+                  <button class="exporter-tab-btn active" data-format="css">
+                    <span>CSS Variables</span>
+                  </button>
+                  <button class="exporter-tab-btn" data-format="tw4">
+                    <span>Tailwind v4</span>
+                  </button>
+                  <button class="exporter-tab-btn" data-format="tw3">
+                    <span>Tailwind v3</span>
+                  </button>
+                  <button class="exporter-tab-btn" data-format="flutter">
+                    <span>Flutter</span>
+                  </button>
+                  <button class="exporter-tab-btn" data-format="compose">
+                    <span>Compose</span>
+                  </button>
+                  <button class="exporter-tab-btn" data-format="swift">
+                    <span>SwiftUI</span>
+                  </button>
+                  <button class="exporter-tab-btn" data-format="tokens">
+                    <span>Design Tokens</span>
+                  </button>
+                  <button class="exporter-tab-btn" data-format="svg">
+                    <span>SVG</span>
+                  </button>
+                </nav>
+
+                <textarea
+                  id="exportCodeView"
+                  class="code-textarea"
+                  readonly
+                  spellcheck="false"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tab 5: Curated Presets Gallery -->
+          <section
+            class="tab-panel"
+            id="tab-presets"
+            aria-label="Curated Presets"
+          >
+            <div class="presets-cards" id="presetsGrid">
+              <!-- Preset cards injected dynamically -->
+            </div>
+          </section>
+        </div>
+
+        <!-- Bottom Floating Centered Action Dock -->
+        <div class="canvas-dock-container">
+          <div
+            class="canvas-action-dock"
+            role="toolbar"
+            aria-label="Palette Actions Toolbar"
+          >
+            <button
+              id="randomizeBtn"
+              class="button dock-randomize-btn"
+              title="Generate Random Scheme (Spacebar)"
+            >
+              <span class="material-symbols-outlined" style="font-size: 1.05rem"
+                >shuffle</span
+              >
+              <span>Randomize</span>
+              <kbd>Space</kbd>
+            </button>
+
+            <div class="dock-divider" aria-hidden="true"></div>
+
+            <button
+              id="eyedropperBtn"
+              class="button-icon-only"
+              title="Pick Color from Screen"
+              aria-label="Pick Color from Screen"
+            >
+              <span class="material-symbols-outlined" style="font-size: 1.05rem"
+                >colorize</span
+              >
+            </button>
+
+            <button
+              id="openImageBtn"
+              class="button-icon-only"
+              title="Extract Palette from Image"
+              aria-label="Extract Palette from Image"
+            >
+              <span class="material-symbols-outlined" style="font-size: 1.05rem"
+                >image</span
+              >
+            </button>
+
+            <button
+              id="sharePaletteBtn"
+              class="button-icon-only"
+              title="Share Palette Link"
+              aria-label="Share Palette Link"
+            >
+              <span class="material-symbols-outlined" style="font-size: 1.05rem"
+                >share</span
+              >
+            </button>
+
+            <div class="dock-divider" aria-hidden="true"></div>
+
+            <!-- Frame Theme Selector -->
+            <div
+              class="dock-segmented-group"
+              id="sandboxThemeGroup"
+              role="tablist"
+              aria-label="Frame Preview Theme"
+            >
+              <button
+                class="dock-segment-btn active"
+                data-theme="auto"
+                title="Auto (Follow System / Web App)"
+                role="tab"
+                aria-selected="true"
+              >
+                <span class="material-symbols-outlined" style="font-size: 1rem"
+                  >brightness_auto</span
+                >
+                <span>Auto</span>
+              </button>
+              <button
+                class="dock-segment-btn"
+                data-theme="light"
+                title="Light Preview Theme"
+                role="tab"
+                aria-selected="false"
+              >
+                <span class="material-symbols-outlined" style="font-size: 1rem"
+                  >light_mode</span
+                >
+                <span>Light</span>
+              </button>
+              <button
+                class="dock-segment-btn"
+                data-theme="dark"
+                title="Dark Preview Theme"
+                role="tab"
+                aria-selected="false"
+              >
+                <span class="material-symbols-outlined" style="font-size: 1rem"
+                  >dark_mode</span
+                >
+                <span>Dark</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- 3. Right Settings Inspector Panel -->
+      <aside
+        class="app-panel-right"
+        id="inspectorPanel"
+        aria-label="Settings Inspector"
+      >
+        <!-- Inspector Panel Header with Close Button -->
+        <div class="inspector-header">
+          <div class="inspector-header-title">
+            <span class="inspector-heading">Inspector</span>
+            <span class="tag-badge">Tokens</span>
+          </div>
+          <button
+            id="closeInspectorBtn"
+            class="button-icon-only close-inspector-btn"
+            title="Close Right Panel (])"
+            aria-label="Close Right Panel"
+          >
+            <span class="material-symbols-outlined" style="font-size: 1.15rem"
+              >right_panel_close</span
+            >
+          </button>
+        </div>
+
+        <!-- Active Palette Swatches Section -->
+        <div class="inspector-section">
+          <div class="inspector-section-header">
+            <span class="inspector-title">Active Palette</span>
+            <span
+              style="
+                font-size: var(--text-xs);
+                color: var(--color-text-muted);
+                font-family: var(--font-mono);
+              "
+              >5 Colors</span
+            >
+          </div>
+          <div class="swatches-grid" id="paletteSwatches">
+            <!-- Swatches dynamically injected by app.js -->
+          </div>
+        </div>
+
+        <!-- Seed Color Setting -->
+        <div class="inspector-section">
+          <span class="inspector-title">Primary Seed</span>
+          <div class="seed-picker-card">
+            <div
+              class="color-swatch-input"
+              id="seedSwatchWrap"
+              title="Click to choose seed color"
+            >
+              <input type="color" id="seedColorInput" value="#6366F1" />
+            </div>
+            <input
+              type="text"
+              id="seedHexInput"
+              class="hex-text-input"
+              value="#6366F1"
+              maxlength="7"
+              title="Enter Hex Code"
+            />
+          </div>
+        </div>
+
+        <!-- Harmony Mode Setting -->
+        <div class="inspector-section">
+          <span class="inspector-title">Color Harmony</span>
+          <div class="harmony-list-pills" id="harmonySelector">
+            <button class="pill-btn active" data-harmony="analogous">
+              Analogous
+            </button>
+            <button class="pill-btn" data-harmony="monochromatic">
+              Monochrome
+            </button>
+            <button class="pill-btn" data-harmony="complementary">
+              Complementary
+            </button>
+            <button class="pill-btn" data-harmony="split">Split-Comp</button>
+            <button class="pill-btn" data-harmony="triadic">Triadic</button>
+            <button class="pill-btn" data-harmony="tetradic">Tetradic</button>
+          </div>
+        </div>
+
+        <!-- Vision Simulation -->
+        <div class="inspector-section">
+          <span class="inspector-title">Vision Simulation</span>
+          <select id="visionSelect" class="clean-select">
+            <option value="normal">Normal Vision</option>
+            <option value="protanopia">Protanopia (Red-Blind)</option>
+            <option value="deuteranopia">Deuteranopia (Green-Blind)</option>
+            <option value="tritanopia">Tritanopia (Blue-Blind)</option>
+            <option value="achromatopsia">Achromatopsia (Monochrome)</option>
+          </select>
+        </div>
+
+        <!-- Quick System Stats -->
+        <div class="inspector-section" style="margin-top: auto">
+          <div
+            style="
+              font-size: var(--text-xs);
+              color: var(--color-text-muted);
+              line-height: 1.5;
+            "
+          >
+            Rendered with <strong>OKLCH</strong> &bull; Perceptually uniform
+            across light and dark modes.
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Image Palette Extraction Modal -->
+    <div class="modal-backdrop" id="imageUploadModal">
+      <div class="surface-card" style="max-width: 440px; width: 100%">
+        <div class="card-header-subtle">
+          <span class="card-heading">Extract from Image</span>
+          <button
+            class="button button-secondary button-icon-only"
+            id="closeImageModalBtn"
+            title="Close"
+            style="width: 1.75rem; height: 1.75rem; min-block-size: 1.75rem"
+          >
+            <span class="material-symbols-outlined" style="font-size: 1rem"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div class="drop-area" id="imageDropZone">
+          <span
+            class="material-symbols-outlined"
+            style="font-size: 2.25rem; color: var(--color-text-muted)"
+            >cloud_upload</span
+          >
+          <span
+            style="
+              font-size: var(--text-caption);
+              font-weight: 600;
+              color: var(--color-text-primary);
+            "
+            >Drop image here or click to browse</span
+          >
+          <span
+            style="font-size: var(--text-xs); color: var(--color-text-muted)"
+            >PNG, JPG, WebP, SVG</span
+          >
+          <input
+            type="file"
+            id="imageFileInput"
+            accept="image/*"
+            style="display: none"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="js/color-utils.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
